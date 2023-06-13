@@ -1,0 +1,142 @@
+﻿@page
+@model HCILab3.IndexModel
+
+@{
+    ViewData["Title"] = "Lab Work 3";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Dialogs</h2>
+            <div class="button-container">
+                <button onclick="showYesNoCancelDialog()">Yes, No, Cancel</button>
+                <button onclick="showAbortRetryIgnoreDialog()">Abort, Retry, Ignore</button>
+                <button onclick="openFileDialog()">File Open</button>
+                <button onclick="showCustomDialog()">Custom Dialog</button>
+                <button onclick="showMessageWithOptionDialog()">Message and Option Dialog</button>
+                <button onclick="exit()">Exit</button>
+            </div>
+            <div class="dialog-results">
+                Dialog Results: <span id="dialogResults"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function showYesNoCancelDialog() {
+            showDialog("Yes, No, Cancel", "Do you like this option?", ["Yes", "No", "Cancel"]);
+        }
+
+        function showAbortRetryIgnoreDialog() {
+            showDialog("Abort, Retry, Ignore", "Choose your action:", ["Abort", "Retry", "Ignore"]);
+        }
+
+        function openFileDialog() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = function (e) {
+                var file = e.target.files[0];
+                if (file) {
+                    document.getElementById("dialogResults").textContent = "File Open: " + file.name;
+                }
+            };
+            input.click();
+        }
+
+        function showCustomDialog() {
+            var message = prompt("Enter a message:");
+            if (message) {
+                var options = ["Option 1", "Option 2", "Option 3"];
+                var selectedOption = showDialog("Message and Option Dialog", message, options);
+                document.getElementById("dialogResults").textContent = "Which Option: " + selectedOption;
+            }
+        }
+
+        function showDialog(title, message, options) {
+            var dialog = document.createElement("div");
+            dialog.classList.add("dialog");
+
+            var dialogTitle = document.createElement("h2");
+            dialogTitle.textContent = title;
+
+            var dialogMessage = document.createElement("p");
+            dialogMessage.textContent = message;
+
+            var dialogButtons = document.createElement("div");
+            dialogButtons.classList.add("dialog-buttons");
+
+            options.forEach(function (option) {
+                var button = document.createElement("button");
+                button.textContent = option;
+                button.addEventListener("click", function () {
+                    document.getElementById("dialogResults").textContent = option;
+                    dialog.remove();
+                });
+
+                dialogButtons.appendChild(button);
+            });
+
+            dialog.appendChild(dialogTitle);
+            dialog.appendChild(dialogMessage);
+            dialog.appendChild(dialogButtons);
+
+            document.body.appendChild(dialog);
+        }
+
+        function showMessageWithOptionDialog() {
+            var messageDialog = document.createElement("div");
+            messageDialog.classList.add("dialog");
+
+            var messageTitle = document.createElement("h2");
+            messageTitle.textContent = "Message and Option Dialog";
+
+            var messageText = document.createElement("p");
+            messageText.textContent = "This is a message with exclamation and question marks.";
+
+            var exclamationMark = document.createElement("span");
+            exclamationMark.textContent = "!";
+            exclamationMark.style.fontSize = "24px";
+            exclamationMark.style.marginRight = "5px";
+
+            var questionMark = document.createElement("span");
+            questionMark.textContent = "?";
+            questionMark.style.fontSize = "24px";
+            questionMark.style.marginRight = "5px";
+
+            var okButton = document.createElement("button");
+            okButton.textContent = "OK";
+            okButton.addEventListener("click", function () {
+                document.getElementById("dialogResults").textContent = "Message Dialog Result: OK";
+                messageDialog.remove();
+            });
+
+            var cancelButton = document.createElement("button");
+            cancelButton.textContent = "Cancel";
+            cancelButton.addEventListener("click", function () {
+                document.getElementById("dialogResults").textContent = "Message Dialog Result: Cancel";
+                messageDialog.remove();
+            });
+
+            var buttonsContainer = document.createElement("div");
+            buttonsContainer.classList.add("dialog-buttons");
+            buttonsContainer.appendChild(okButton);
+            buttonsContainer.appendChild(cancelButton);
+
+            messageDialog.appendChild(messageTitle);
+            messageDialog.appendChild(messageText);
+            messageDialog.appendChild(exclamationMark);
+            messageDialog.appendChild(questionMark);
+            messageDialog.appendChild(buttonsContainer);
+
+            document.body.appendChild(messageDialog);
+        }
+
+        function exit() {
+            window.close();
+        }
+    </script>
+}
